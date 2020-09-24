@@ -56,6 +56,7 @@ open class AssetManager {
     let requestOptions = PHImageRequestOptions()
 //    requestOptions.isSynchronous = true
     requestOptions.isNetworkAccessAllowed = true
+    requestOptions.deliveryMode = .highQualityFormat
 
     let group = DispatchGroup()
     var images = [UIImage]()
@@ -63,11 +64,13 @@ open class AssetManager {
     for asset in assets {
 //      DispatchQueue.global().async {
         group.enter()
+      print("~~enter")
         imageManager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: requestOptions) { image, info in
           if let image = image {
             images.append(image)
           }
           group.leave()
+          print("~~leave")
         }
 //      }
     }
