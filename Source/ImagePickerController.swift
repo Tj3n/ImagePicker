@@ -370,29 +370,43 @@ extension ImagePickerController: BottomContainerViewDelegate {
   }
 
   func doneButtonDidPress() {
-    var images: [UIImage]
+    let indicator = UIActivityIndicatorView.showInView(view, animated: false)
+    
     if let preferredImageSize = preferredImageSize {
-      images = AssetManager.resolveAssets(stack.assets, size: preferredImageSize)
+      AssetManager.resolveAssets(stack.assets, size: preferredImageSize, completion: { [weak self] images in
+        indicator.end()
+        guard let self = self else { return }
+        self.delegate?.doneButtonDidPress(self, images: images)
+      })
     } else {
-      images = AssetManager.resolveAssets(stack.assets)
+      AssetManager.resolveAssets(stack.assets, completion: { [weak self] images in
+        indicator.end()
+        guard let self = self else { return }
+        self.delegate?.doneButtonDidPress(self, images: images)
+      })
     }
-
-    delegate?.doneButtonDidPress(self, images: images)
   }
-
+  
   func cancelButtonDidPress() {
     delegate?.cancelButtonDidPress(self)
   }
-
+  
   func imageStackViewDidPress() {
-    var images: [UIImage]
+    let indicator = UIActivityIndicatorView.showInView(view, animated: false)
+    
     if let preferredImageSize = preferredImageSize {
-        images = AssetManager.resolveAssets(stack.assets, size: preferredImageSize)
+      AssetManager.resolveAssets(stack.assets, size: preferredImageSize, completion: { [weak self] images in
+        indicator.end()
+        guard let self = self else { return }
+        self.delegate?.wrapperDidPress(self, images: images)
+      })
     } else {
-        images = AssetManager.resolveAssets(stack.assets)
+      AssetManager.resolveAssets(stack.assets, completion: { [weak self] images in
+        indicator.end()
+        guard let self = self else { return }
+        self.delegate?.wrapperDidPress(self, images: images)
+      })
     }
-
-    delegate?.wrapperDidPress(self, images: images)
   }
 }
 
