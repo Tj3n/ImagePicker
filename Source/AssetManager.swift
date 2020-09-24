@@ -62,17 +62,15 @@ open class AssetManager {
     var images = [UIImage]()
     
     for asset in assets {
-//      DispatchQueue.global().async {
-        group.enter()
-      print("~~enter")
-        imageManager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: requestOptions) { image, info in
+      group.enter()
+      imageManager.requestImage(for: asset, targetSize: size, contentMode: .aspectFill, options: requestOptions) { image, info in
+        DispatchQueue.main.async {
           if let image = image {
             images.append(image)
           }
           group.leave()
-          print("~~leave")
         }
-//      }
+      }
     }
     
     group.notify(queue: .main) {
